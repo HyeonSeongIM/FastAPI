@@ -1,22 +1,13 @@
-from fastapi import FastAPI, Request
-from fastapi.responses import JSONResponse
-from routers import items
-from dotenv import load_dotenv
-import os
+# main.py
+from fastapi import FastAPI
+from routers import member
 
-load_dotenv()
+app = FastAPI()
 
-app = FastAPI(title="Item Management API", version="v1")
-
-# 라우터 등록
-app.include_router(items.router, prefix="/v1")
-
-# 중앙 집중형 에러 처리
-@app.exception_handler(ValueError)
-async def value_error_handler(request: Request, exc: ValueError) -> JSONResponse:
-    return JSONResponse(status_code=400, content={"detail": str(exc)})
+print("Registering member router")  # 디버깅 로그 추가
+app.include_router(member.router)
+print("Member router registered successfully")
 
 @app.get("/")
-async def read_root() -> dict[str, str]:
-    """루트 엔드포인트: API 상태 확인."""
-    return {"message": "Welcome to the Item Management API"}
+def read_root():
+    return {"message": "Welcome to FastAPI!"}
